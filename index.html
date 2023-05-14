@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+   <title>Adicionando Endereços</title>
+   <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div id="app">
+        <button class="open-modal-btn" @click="isShowModalAddress = true">Adicionar Endereço</button>
+        <div v-if="isShowModalAddress" class="modal">
+            <div class="modal-content">
+                
+            <span class="close" @click="isShowModalAddress = false">&times;</span>
+            <h2>Cadastrar Endereço</h2>
+            <div class="form-group">
+                <label for="cep">CEP:</label>
+                <input class="form-control" v-model="address.cep" id="cep" name="cep" @blur="handleCep">
+            </div>
+            <div class="form-group">
+                <label for="logradouro">Logradouro:</label>
+                <input class="form-control" v-model="address.logradouro" id="logradouro" name="logradouro">
+            </div>
+            <button class="btn btn-primary">Cadastrar</button>
+            <button class="btn btn-cancel">Limpar</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        Vue.createApp({
+            data(){
+                return {
+                   isShowModalAddress: true,
+                   address: {
+                    cep: '',
+                    logradouro: ''
+                   }
+                }
+            },
+            methods: {
+                async handleCep(){
+                    try{
+                        const response = await fetch(`https://viacep.com.br/ws/${this.address.cep}/json/`)
+                        const data = await response.json()
+
+                        this.address.logradouro = data.logradouro
+                    }catch(error){
+                        console.log(error)
+                    }
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
